@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: crisp-checker-app
+    env: docker
+    plan: free
+    region: oregon  # You can change to frankfurt if you prefer Europe
+    branch: main
+    repo: https://github.com/YOUR_USERNAME/YOUR_REPO
+    dockerfilePath: ./Dockerfile
+    buildFilter:
+      paths:
+        - "**/*"
+    autoDeploy: true
