@@ -1,4 +1,4 @@
-oservices:
+services:
   - type: web
     name: crisp-checker-app
     env: docker
