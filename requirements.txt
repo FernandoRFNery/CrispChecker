@@ -1,4 +1,3 @@
 fastapi
 uvicorn
 playwright
-jinja2
