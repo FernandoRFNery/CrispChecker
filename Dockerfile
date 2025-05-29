@@ -1,7 +1,10 @@
 FROM python:3.11-slim
 
-# Install system dependencies for Playwright
-RUN apt-get update && apt-get install -y \
+# Update package list
+RUN apt-get update
+
+# Install system dependencies for Playwright (removed libmanette-0.2-0 as it's uncommon)
+RUN apt-get install -y \
     wget \
     ca-certificates \
     fonts-liberation \
@@ -27,25 +30,18 @@ RUN apt-get update && apt-get install -y \
     libavif15 \
     libenchant-2-2 \
     libsecret-1-0 \
-    libmanette-0.2-0 \
     libgles2 \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
 WORKDIR /app
 
-# Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Install Playwright browsers
 RUN playwright install --with-deps
 
-# Copy app code
 COPY . .
 
-# Expose port
 EXPOSE 8000
 
-# Start app
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
