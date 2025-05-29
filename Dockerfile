@@ -1,10 +1,6 @@
 FROM python:3.11-slim
 
-# Update package list
-RUN apt-get update
-
-# Install system dependencies for Playwright (removed libmanette-0.2-0 as it's uncommon)
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     wget \
     ca-certificates \
     fonts-liberation \
@@ -24,12 +20,12 @@ RUN apt-get update && apt-get install -y \
     libvulkan1 \
     xdg-utils \
     libgtk-3-0 \
-    libgst-gl-1.0-0 \
+    libgstgl-1.0-0 \
     libgstcodecparsers-1.0-0 \
     libavif15 \
     libenchant-2-2 \
     libsecret-1-0 \
-    libgles2 \
+    libgles2-mesa \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
