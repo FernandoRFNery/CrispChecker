@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crisp Checker Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Crisp-inspired color palette */
+            --bg-primary: #fafbfc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-accent: #f8fafc;
+            --text-primary: #1a1a1a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --accent-blue: #3b82f6;
+            --accent-blue-hover: #2563eb;
+            --accent-blue-light: #dbeafe;
+            --success: #10b981;
+            --success-light: #d1fae5;
+            --error: #ef4444;
+            --error-light: #fee2e2;
+            --warning: #f59e0b;
+            --warning-light: #fef3c7;
+            --border: #e2e8f0;
+            --border-light: #f1f5f9;
+            --radius: 12px;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 24px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 48px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .header h1 {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+            letter-spacing: -0.02em;
+        }
+
+        .header .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 32px;
+            margin-bottom: 32px;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-blue-light);
+        }
+
+        .input-section {
+            margin-bottom: 24px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .textarea-container {
+            position: relative;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            background: var(--bg-accent);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 14px;
+            resize: vertical;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px var(--accent-blue-light);
+            background: var(--bg-secondary);
+        }
+
+        textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* File input styling */
+        .file-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-input-label {
+            background: var(--bg-accent);
+            border: 2px solid var(--border);
+            color: var(--text-secondary);
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .file-input-label:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+            background: var(--accent-blue-light);
+        }
+
+        .file-name-display {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            flex-grow: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-hover));
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            outline: none;
+            box-shadow: var(--shadow);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+            background: linear-gradient(135deg, var(--accent-blue-hover), #1d4ed8);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: var(--shadow);
+        }
+
+        .btn-clear {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            color: var(--text-secondary);
+            box-shadow: var(--shadow);
+        }
+
+        .btn-clear:hover {
+            border-color: var(--error);
+            color: var(--error);
+            background: var(--error-light);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-export {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            color: var(--text-secondary);
+            box-shadow: var(--shadow);
+            padding: 14px 32px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .btn-export:hover {
+            border-color: var(--success);
+            color: var(--success);
+            background: var(--success-light);
+            box-shadow: var(--shadow-lg);
+        }
+
+
+        .loading {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-top: 2px solid var(--accent-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .results-card {
+            display: none;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stats {
+            display: flex;
+            gap: 24px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .stat-dot.success { background: var(--success); }
+        .stat-dot.error { background: var(--error); }
+        .stat-dot.warning { background: var(--warning); }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            background: var(--bg-secondary);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--bg-accent);
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: top;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background: var(--bg-accent);
+        }
+
+        .url-cell {
+            max-width: 300px;
+        }
+
+        .url-link {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            word-break: break-all;
+        }
+
+        .url-link:hover {
+            color: var(--accent-blue-hover);
+            text-decoration: underline;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            gap: 6px;
+        }
+
+        .badge.uses {
+            background: var(--success-light);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .badge.not-uses {
+            background: var(--error-light);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .badge.error {
+            background: var(--warning-light);
+            color: var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .badge-icon {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .badge.uses .badge-icon { background: var(--success); }
+        .badge.not-uses .badge-icon { background: var(--error); }
+        .badge.error .badge-icon { background: var(--warning); }
+
+        .error-cell {
+            color: var(--text-muted);
+            font-size: 14px;
+            max-width: 250px;
+            word-break: break-word;
+        }
+
+        .controls {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1; /* Allows search box to grow and shrink */
+        }
+
+        .filter-box {
+            flex: 0 0 160px; /* Prevents filter box from growing/shrinking, sets a fixed width */
+        }
+
+        .search-input, .filter-select {
+            width: 100%;
+            padding: 10px 16px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .search-input:focus, .filter-select:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px var(--accent-blue-light);
+        }
+
+        .filter-select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2364748b'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.7rem center;
+            background-size: 1.5em;
+            padding-right: 2.5rem;
+            /* min-width is now handled by flex-basis on .filter-box */
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+            
+            .card {
+                padding: 24px;
+            }
+            
+            .button-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .results-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+            
+            .stats {
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+            
+            th, td {
+                padding: 12px 8px;
+            }
+
+            .file-input-wrapper {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .file-input-label {
+                max-width: 100%;
+                width: 100%;
+                text-align: center;
+            }
+
+            .controls {
+                flex-direction: column; /* Stack on small screens */
+                align-items: stretch;
+            }
+
+            .search-box, .filter-box {
+                flex: none; /* Reset flex properties to default for stacking */
+                width: 100%; /* Take full width on small screens */
+            }
+        }
+
+        /* Enhanced visual elements */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--success));
+            border-radius: var(--radius) var(--radius) 0 0;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card {
+            position: relative;
+        }
+
+        /* Footer styles */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-light);
+        }
+
+        /* Pagination styles */
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .pagination-button {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 8px 12px;
+            font-size: 14px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .pagination-button:hover:not(:disabled) {
+            background: var(--accent-blue-light);
+            color: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+        .pagination-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination-button.active {
+            background: var(--accent-blue);
+            color: white;
+            border-color: var(--accent-blue);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Crisp Checker</h1>
+        <p class="subtitle">Verify if websites use Crisp Chat integration</p>
+    </div>
+
+    <div class="card">
+        <div class="input-section">
+            <label class="input-label" for="urls">Enter URLs (one per line):</label>
+            <div class="textarea-container">
+                <textarea 
+                    id="urls" 
+                    placeholder="https://example.com&#10;https://another-site.com&#10;https://website.org"
+                    rows="6"
+                ></textarea>
+            </div>
+            <div class="input-section">
+                <label class="input-label" for="csvFile">Or upload a CSV file (one URL per row, or comma-separated):</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="csvFile" accept=".csv" class="file-input">
+                    <label for="csvFile" class="file-input-label">Choose CSV File</label>
+                    <span id="fileNameDisplay" class="file-name-display">No file chosen</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button class="btn" onclick="checkUrls()" id="checkBtn">
+                Check Websites
+            </button>
+            <button class="btn btn-clear" onclick="clearAll()">
+                Clear All
+            </button>
+            <button class="btn-export" onclick="exportToCsv()">
+                Export to CSV
+            </button>
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <span>Checking websites...</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card results-card" id="resultsCard">
+        <div class="results-header">
+            <h2 class="results-title">Results</h2>
+            <div class="stats" id="stats"></div>
+        </div>
+
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search websites...">
+            </div>
+            <div class="filter-box">
+                <select id="statusFilter" class="filter-select">
+                    <option value="all">All Results</option>
+                    <option value="uses">Uses Crisp</option>
+                    <option value="not-uses">No Crisp</option>
+                    <option value="error">Errors</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>Website</th>
+                        <th>Status</th>
+                        <th>Error Details</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                    </tbody>
+            </table>
+            <div id="emptyState" class="empty-state hidden">
+                <div class="empty-state-icon">🔍</div>
+                <p>No results found matching your criteria.</p>
+            </div>
+        </div>
+        <div id="paginationControls" class="pagination-controls">
+            </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <p>&copy; 2023 Crisp Checker. All rights reserved.</p>
+</footer>
+
+<script>
+    const urlsTextarea = document.getElementById('urls');
+    const csvFileInput = document.getElementById('csvFile');
+    const fileNameDisplay = document.getElementById('fileNameDisplay');
+    const checkBtn = document.getElementById('checkBtn');
+    const loading = document.getElementById('loading');
+    const resultsCard = document.getElementById('resultsCard');
+    const resultsBody = document.getElementById('resultsBody');
+    const stats = document.getElementById('stats');
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const emptyState = document.getElementById('emptyState');
+    const paginationControls = document.getElementById('paginationControls');
+
+    // Global variables for pagination and filtering
+    let allCrispResults = [];
+    let filteredCrispResults = [];
+    let currentPage = 1;
+    const itemsPerPage = 20; // Limit to 20 results per page
+
+    // Update file name display when a file is selected
+    csvFileInput.addEventListener('change', () => {
+        if (csvFileInput.files.length > 0) {
+            fileNameDisplay.textContent = csvFileInput.files[0].name;
+        } else {
+            fileNameDisplay.textContent = 'No file chosen';
+        }
+    });
+
+    function clearAll() {
+        urlsTextarea.value = '';
+        csvFileInput.value = '';
+        fileNameDisplay.textContent = 'No file chosen';
+        resultsCard.style.display = 'none';
+        resultsBody.innerHTML = '';
+        stats.innerHTML = '';
+        searchInput.value = '';
+        statusFilter.value = 'all';
+        emptyState.classList.add('hidden');
+        paginationControls.innerHTML = ''; // Clear pagination controls
+        allCrispResults = []; // Clear all results
+        filteredCrispResults = []; // Clear filtered results
+        currentPage = 1; // Reset current page
+    }
+
+    async function checkUrls() {
+        let allUrls = new Set();
+
+        // Get URLs from textarea
+        const textareaUrls = urlsTextarea.value
+            .split('\n')
+            .map(u => u.trim())
+            .filter(u => u);
+        textareaUrls.forEach(url => allUrls.add(url));
+
+        // Get URLs from CSV file if selected
+        const file = csvFileInput.files[0];
+        if (file) {
+            try {
+                const fileContent = await readFileAsync(file);
+                const csvUrls = fileContent
+                    .split(/[\n,]+/)
+                    .map(u => u.trim())
+                    .filter(u => u);
+                csvUrls.forEach(url => allUrls.add(url));
+            } catch (error) {
+                console.error('Error reading CSV file:', error);
+                showCustomAlert('Error reading CSV file. Please ensure it is a valid text file.');
+                return;
+            }
+        }
+
+        const urls = Array.from(allUrls);
+
+        if (urls.length === 0) {
+            showCustomAlert("Please enter at least one URL or upload a CSV file.");
+            return;
+        }
+
+        // Show loading state
+        checkBtn.disabled = true;
+        loading.style.display = 'flex';
+        resultsCard.style.display = 'none';
+
+        try {
+            const response = await fetch('/check', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ urls })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            displayResults(data.results);
+            
+        } catch (error) {
+            console.error('Error:', error);
+            showCustomAlert(`An error occurred while checking the websites: ${error.message}. Please try again.`);
+        } finally {
+            checkBtn.disabled = false;
+            loading.style.display = 'none';
+        }
+    }
+
+    function readFileAsync(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (event) => resolve(event.target.result);
+            reader.onerror = (event) => reject(event.target.error);
+            reader.readAsText(file);
+        });
+    }
+
+    function displayResults(results) {
+        allCrispResults = results; // Store all results
+        filterTable(); // Apply filter and render first page
+        resultsCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function renderTablePage(pageNumber) {
+        currentPage = pageNumber;
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const paginatedResults = filteredCrispResults.slice(startIndex, endIndex);
+
+        resultsBody.innerHTML = ''; // Clear previous results
+
+        if (paginatedResults.length === 0 && filteredCrispResults.length > 0) {
+            // If no results on current page but there are filtered results, go to last page
+            renderTablePage(Math.ceil(filteredCrispResults.length / itemsPerPage));
+            return;
+        } else if (paginatedResults.length === 0 && filteredCrispResults.length === 0) {
+            emptyState.classList.remove('hidden');
+        } else {
+            emptyState.classList.add('hidden');
+        }
+
+        paginatedResults.forEach(result => {
+            const row = document.createElement('tr');
+            
+            let statusClass = '';
+            let statusText = result.status;
+            
+            if (result.status === "Uses Crisp") {
+                statusClass = "uses";
+            } else if (result.status === "Does NOT use Crisp") {
+                statusClass = "not-uses";
+            } else {
+                statusClass = "error";
+            }
+
+            row.setAttribute('data-url', result.url.toLowerCase());
+            row.setAttribute('data-status', statusClass);
+
+            row.innerHTML = `
+                <td class="url-cell">
+                    <a href="${result.url}" target="_blank" class="url-link">${result.url}</a>
+                </td>
+                <td>
+                    <span class="badge ${statusClass}">
+                        <span class="badge-icon"></span>
+                        ${statusText}
+                    </span>
+                </td>
+                <td class="error-cell">${result.error || '-'}</td>
+            `;
+            
+            resultsBody.appendChild(row);
+        });
+
+        resultsCard.style.display = 'block';
+        renderPaginationControls(); // Update pagination buttons
+        updateStats(); // Update stats based on filtered results
+    }
+
+    function updateStats() {
+        const total = filteredCrispResults.length;
+        const usesCrisp = filteredCrispResults.filter(r => r.status === "Uses Crisp").length;
+        const doesNotUse = filteredCrispResults.filter(r => r.status === "Does NOT use Crisp").length;
+        const errors = filteredCrispResults.filter(r => r.status !== "Uses Crisp" && r.status !== "Does NOT use Crisp").length;
+        
+        stats.innerHTML = `
+            <div class="stat">
+                <div class="stat-dot success"></div>
+                <span>Uses Crisp: ${usesCrisp}</span>
+            </div>
+            <div class="stat">
+                <div class="stat-dot error"></div>
+                <span>No Crisp: ${doesNotUse}</span>
+            </div>
+            <div class="stat">
+                <div class="stat-dot warning"></div>
+                <span>Errors: ${errors}</span>
+            </div>
+            <div class="stat">
+                <span>Total: ${total}</span>
+            </div>
+        `;
+    }
+
+    function renderPaginationControls() {
+        paginationControls.innerHTML = ''; // Clear existing buttons
+        const totalPages = Math.ceil(filteredCrispResults.length / itemsPerPage);
+
+        if (totalPages <= 1) {
+            return; // No pagination needed for 1 or fewer pages
+        }
+
+        // Previous button
+        const prevButton = document.createElement('button');
+        prevButton.textContent = 'Previous';
+        prevButton.classList.add('pagination-button');
+        prevButton.disabled = currentPage === 1;
+        prevButton.addEventListener('click', () => renderTablePage(currentPage - 1));
+        paginationControls.appendChild(prevButton);
+
+        // Page number buttons
+        const maxPageButtons = 5; // Max number of page buttons to show
+        let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
+        let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
+
+        // Adjust startPage if we're at the end
+        if (endPage - startPage + 1 < maxPageButtons) {
+            startPage = Math.max(1, endPage - maxPageButtons + 1);
+        }
+
+        for (let i = startPage; i <= endPage; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = i;
+            pageButton.classList.add('pagination-button');
+            if (i === currentPage) {
+                pageButton.classList.add('active');
+            }
+            pageButton.addEventListener('click', () => renderTablePage(i));
+            paginationControls.appendChild(pageButton);
+        }
+
+        // Next button
+        const nextButton = document.createElement('button');
+        nextButton.textContent = 'Next';
+        nextButton.classList.add('pagination-button');
+        nextButton.disabled = currentPage === totalPages;
+        nextButton.addEventListener('click', () => renderTablePage(currentPage + 1));
+        paginationControls.appendChild(nextButton);
+    }
+
+    function filterTable() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const filterValue = statusFilter.value;
+        
+        filteredCrispResults = allCrispResults.filter(result => {
+            const url = result.url.toLowerCase();
+            let statusClass = '';
+            if (result.status === "Uses Crisp") {
+                statusClass = "uses";
+            } else if (result.status === "Does NOT use Crisp") {
+                statusClass = "not-uses";
+            } else {
+                statusClass = "error";
+            }
+
+            const matchesSearch = url.includes(searchTerm);
+            const matchesFilter = filterValue === 'all' || statusClass === filterValue;
+
+            return matchesSearch && matchesFilter;
+        });
+
+        renderTablePage(1); // Always reset to the first page when filters change
+    }
+
+    // Function to export results to CSV
+    function exportToCsv() {
+        if (filteredCrispResults.length === 0) {
+            showCustomAlert("No results to export. Please run a check first.");
+            return;
+        }
+
+        const headers = ["URL", "Status", "Error Details"];
+        // Escape double quotes and enclose fields in double quotes
+        const csvRows = [
+            headers.map(header => `"${header.replace(/"/g, '""')}"`).join(',')
+        ];
+
+        filteredCrispResults.forEach(result => {
+            const url = `"${result.url.replace(/"/g, '""')}"`;
+            const status = `"${result.status.replace(/"/g, '""')}"`;
+            const error = `"${(result.error || '-').replace(/"/g, '""')}"`;
+            csvRows.push([url, status, error].join(','));
+        });
+
+        const csvString = csvRows.join('\n');
+        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'crisp_checker_results.csv';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href); // Clean up the URL object
+    }
+
+
+    // Handle Ctrl+Enter in textarea
+    urlsTextarea.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'Enter') {
+            checkUrls();
+        }
+    });
+
+    // Event listeners for search and filter
+    searchInput.addEventListener('input', filterTable);
+    statusFilter.addEventListener('change', filterTable);
+
+    // Initial call to update stats and pagination (in case of pre-loaded data, though not applicable here)
+    updateStats();
+    renderPaginationControls();
+</script>
+</body>
+</html>
