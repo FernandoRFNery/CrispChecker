@@ -4,6 +4,9 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import List
 import asyncio
+import sys
+import os
+sys.path.append(os.getcwd())  # Add the current working directory to Python's path
 from CrispCheckerV3 import check_crisp
 
 app = FastAPI()
