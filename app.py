@@ -24,18 +24,23 @@ async def serve_frontend():
 
 @app.post("/check")
 async def check_urls(data: URLList):
-    semaphore = asyncio.Semaphore(5)
-    # In this version, check_crisp does NOT receive a 'browser' argument
-    tasks = [check_crisp(url, semaphore, headless_mode=True) for url in data.urls]
-    results = await asyncio.gather(*tasks)
+    try:
+        semaphore = asyncio.Semaphore(5)
+        tasks = [check_crisp(url, semaphore, headless_mode=True) for url in data.urls]
+        results = await asyncio.gather(*tasks)
 
-    output = []
-    for url, (status, error) in zip(data.urls, results):
-        output.append({
-            "url": url,
-            "status": status,
-            "error": error
-        })
+        output = []
+        for url, (status, error) in zip(data.urls, results):
+            output.append({
+                "url": url,
+                "status": status,
+                "error": error
+            })
 
-    return JSONResponse(content={"results": output})
+        return JSONResponse(content={"results": output})
+    except Exception as e:
+        return JSONResponse(
+            content={"error": str(e)},
+            status_code=500
+        )
 
