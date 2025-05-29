@@ -1,3 +1,4 @@
+import os
 import sys
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, FileResponse, JSONResponse
