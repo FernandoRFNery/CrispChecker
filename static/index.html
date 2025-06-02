@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crisp Checker Dashboard</title>
+    <link rel="icon" type="image/png" href="/static/favicon.png"> 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -11,7 +12,7 @@
             --bg-primary: #fafbfc;
             --bg-secondary: #ffffff;
             --bg-card: #ffffff;
-            --bg-accent: #f8fafc;
+            --bg-accent: #f8fafc; /* Used for log panel background */
             --text-primary: #1a1a1a;
             --text-secondary: #64748b;
             --text-muted: #94a3b8;
@@ -20,7 +21,8 @@
             --accent-blue-light: #dbeafe;
             --success: #10b981;
             --success-light: #d1fae5;
-            --error: #ef4444;
+            --error: #ef4444; /* Red for error/danger */
+            --error-hover: #dc2626; /* Darker red for hover */
             --error-light: #fee2e2;
             --warning: #f59e0b;
             --warning-light: #fef3c7;
@@ -29,7 +31,6 @@
             --radius: 12px;
             --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
 
         * {
@@ -49,6 +50,7 @@
             min-height: 100vh;
             padding: 24px;
             line-height: 1.6;
+            font-size: 14px; 
         }
 
         .container {
@@ -58,25 +60,27 @@
 
         .header {
             text-align: center;
-            margin-bottom: 48px;
+            margin-bottom: 40px; 
             animation: fadeInUp 0.8s ease-out;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
         }
 
-        .header h1 {
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--accent-blue), var(--success));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 12px;
-            letter-spacing: -0.02em;
+        .header-logo {
+            height: 250px; 
+            width: auto;   
+            border-radius: 12px; 
+            margin-bottom: 15px; 
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08); 
         }
 
         .header .subtitle {
-            font-size: 1.25rem;
+            font-size: 1.3rem; 
             color: var(--text-secondary);
             font-weight: 400;
+            margin-top: 0; 
         }
 
         .card {
@@ -96,17 +100,26 @@
             border-color: var(--accent-blue-light);
         }
 
+
         .input-section {
             margin-bottom: 24px;
         }
 
         .input-label {
             display: block;
-            font-size: 1.1rem;
+            font-size: 1.1rem; 
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 12px;
         }
+        .input-label.inline { 
+            display: inline-block;
+            margin-bottom: 0;
+            margin-right: 10px;
+            font-size: 0.95rem; 
+            font-weight: 500;
+        }
+
 
         .textarea-container {
             position: relative;
@@ -120,7 +133,7 @@
             border-radius: var(--radius);
             padding: 16px;
             color: var(--text-primary);
-            font-family: inherit;
+            font-family: inherit; 
             font-size: 14px;
             resize: vertical;
             transition: all 0.3s ease;
@@ -137,7 +150,6 @@
             color: var(--text-muted);
         }
 
-        /* File input styling */
         .file-input-wrapper {
             display: flex;
             align-items: center;
@@ -156,6 +168,8 @@
             padding: 10px 20px;
             border-radius: var(--radius);
             font-weight: 500;
+            font-family: inherit; 
+            font-size: 14px; 
             cursor: pointer;
             transition: all 0.3s ease;
             white-space: nowrap;
@@ -172,7 +186,7 @@
 
         .file-name-display {
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.9rem; 
             flex-grow: 1;
             white-space: nowrap;
             overflow: hidden;
@@ -183,7 +197,15 @@
             display: flex;
             gap: 16px;
             align-items: center;
-            flex-wrap: wrap;
+            flex-wrap: wrap; 
+        }
+        
+        .progress-timer-wrapper {
+            width: 100%; 
+            display: flex;
+            flex-direction: column; 
+            align-items: center; 
+            margin-top: 16px; 
         }
 
         .btn {
@@ -192,8 +214,9 @@
             border: none;
             padding: 14px 32px;
             border-radius: var(--radius);
+            font-family: inherit; 
             font-weight: 600;
-            font-size: 16px;
+            font-size: 16px; 
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
@@ -219,6 +242,12 @@
             box-shadow: var(--shadow);
         }
 
+        .btn-clear, .btn-export { 
+            font-family: inherit;
+            font-size: 16px; 
+            font-weight: 600; 
+        }
+
         .btn-clear {
             background: var(--bg-secondary);
             border: 2px solid var(--border);
@@ -240,8 +269,6 @@
             box-shadow: var(--shadow);
             padding: 14px 32px;
             border-radius: var(--radius);
-            font-weight: 600;
-            font-size: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
             outline: none;
@@ -254,13 +281,22 @@
             box-shadow: var(--shadow-lg);
         }
 
+        .btn-danger { 
+            font-family: inherit;
+            background: linear-gradient(135deg, var(--error), var(--error-hover));
+        }
+        .btn-danger:hover {
+            background: linear-gradient(135deg, var(--error-hover), #b91c1c); 
+        }
+
 
         .loading {
-            display: none;
+            display: none; 
             align-items: center;
             gap: 12px;
             color: var(--text-secondary);
             font-weight: 500;
+            font-size: 14px; 
         }
 
         .spinner {
@@ -277,6 +313,125 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Options Card Styles */
+        .collapsible-header {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.5rem; 
+            font-weight: 600; 
+            color: var(--text-primary); 
+            margin-top:0; 
+            margin-bottom: 10px; 
+            border-bottom: 1px solid var(--border-light); 
+            padding-bottom: 10px;
+            transition: margin-bottom 0.3s ease;
+        }
+        .collapsible-header.expanded {
+            margin-bottom: 20px; 
+        }
+
+        .collapsible-header .toggle-icon {
+            font-size: 1rem; 
+            transition: transform 0.3s ease;
+            margin-left: auto; 
+            padding-left: 10px;
+        }
+        .collapsible-header.expanded .toggle-icon {
+            transform: rotate(90deg);
+        }
+
+        .options-grid {
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .option-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .option-item input[type="number"] {
+            padding: 10px 12px;
+            border: 1px solid var(--border-medium);
+            border-radius: var(--radius);
+            font-family: inherit; 
+            font-size: 14px;
+            background: var(--bg-accent);
+            width: 100%; 
+        }
+        .option-item input[type="number"]:focus {
+            border-color: var(--accent-blue);
+            background: var(--bg-secondary);
+            box-shadow: 0 0 0 3px var(--accent-blue-light);
+            outline: none;
+        }
+        .option-item small {
+            font-size: 0.8rem; 
+            color: var(--text-muted);
+        }
+
+
+        /* Log Panel Styles */
+        #clearLogsBtn, #copyLogsBtn { 
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: var(--radius);
+            font-family: inherit; 
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+        #clearLogsBtn:hover, #copyLogsBtn:hover { 
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+            background-color: var(--accent-blue-light);
+        }
+
+        #copyLogsBtn:disabled { 
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+
+        #logPanel {
+            margin-top: 10px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 15px;
+            max-height: 300px; 
+            overflow-y: auto;
+            background-color: var(--bg-accent); 
+            box-shadow: var(--shadow);
+        }
+
+        #logEntriesContainer {
+            font-family: 'Menlo', 'Monaco', 'Consolas', "Courier New", monospace; 
+            font-size: 0.875em; 
+            color: var(--text-primary);
+            white-space: pre-wrap; 
+            word-wrap: break-word; 
+        }
+        #logEntriesContainer div { 
+            padding: 2px 0;
+            border-bottom: 1px dotted var(--border-light); 
+        }
+        #logEntriesContainer div:last-child {
+            border-bottom: none;
+        }
+        .log-error { color: var(--error); font-weight: bold; }
+        .log-warning { color: var(--warning); font-weight: 500;}
+        .log-info { color: var(--text-secondary); }
+        .log-debug { color: var(--text-muted); }
+        .log-correction { color: var(--accent-blue); font-style: italic;}
+        .log-system { color: var(--accent-blue); font-style: italic; font-weight: 500; } 
+
+
         .results-card {
             display: none;
             animation: fadeInUp 0.6s ease-out;
@@ -289,8 +444,8 @@
             margin-bottom: 24px;
         }
 
-        .results-title {
-            font-size: 1.5rem;
+        .results-title { 
+            font-size: 1.5rem; 
             font-weight: 700;
             color: var(--text-primary);
         }
@@ -336,17 +491,29 @@
             padding: 16px;
             text-align: left;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 12px; 
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: var(--text-secondary);
             border-bottom: 1px solid var(--border);
+            cursor: pointer; /* Make headers look clickable */
+            position: relative; /* For sort icon positioning */
+            user-select: none; /* Prevent text selection on click */
         }
+        th .sort-icon { /* Style for sort icons */
+            font-size: 0.8em;
+            margin-left: 5px;
+            display: inline-block;
+            width: 1em; /* Reserve space for icon */
+            text-align: center;
+        }
+
 
         td {
             padding: 16px;
             border-bottom: 1px solid var(--border-light);
             vertical-align: top;
+            font-size: 14px; 
         }
 
         tr:last-child td {
@@ -431,11 +598,11 @@
         }
 
         .search-box {
-            flex: 1; /* Allows search box to grow and shrink */
+            flex: 1; 
         }
 
         .filter-box {
-            flex: 0 0 160px; /* Prevents filter box from growing/shrinking, sets a fixed width */
+            flex: 0 0 160px; 
         }
 
         .search-input, .filter-select {
@@ -445,7 +612,7 @@
             border-radius: var(--radius);
             background: var(--bg-secondary);
             color: var(--text-primary);
-            font-family: inherit;
+            font-family: inherit; 
             font-size: 14px;
             transition: all 0.3s ease;
             outline: none;
@@ -464,7 +631,6 @@
             background-position: right 0.7rem center;
             background-size: 1.5em;
             padding-right: 2.5rem;
-            /* min-width is now handled by flex-basis on .filter-box */
         }
 
         .hidden {
@@ -505,12 +671,12 @@
             }
             
             .button-container {
-                flex-direction: column;
-                align-items: stretch;
+                flex-direction: column; 
+                align-items: stretch; 
             }
             
-            .btn {
-                width: 100%;
+            .btn { 
+                width: 100%; 
                 justify-content: center;
             }
             
@@ -542,17 +708,28 @@
             }
 
             .controls {
-                flex-direction: column; /* Stack on small screens */
+                flex-direction: column; 
                 align-items: stretch;
             }
 
             .search-box, .filter-box {
-                flex: none; /* Reset flex properties to default for stacking */
-                width: 100%; /* Take full width on small screens */
+                flex: none; 
+                width: 100%; 
+            }
+             .progress-timer-wrapper {
+                align-items: stretch; 
+            }
+            .header-logo {
+                height: 60px; 
+            }
+            .header h1 { /* H1 is removed, but if it were to exist on mobile */
+                font-size: clamp(2.2rem, 6vw, 3rem); 
+            }
+            .options-grid {
+                grid-template-columns: 1fr; /* Stack options on smaller screens */
             }
         }
 
-        /* Enhanced visual elements */
         .card::before {
             content: '';
             position: absolute;
@@ -574,17 +751,14 @@
             position: relative;
         }
 
-        /* Footer styles */
         .footer {
             text-align: center;
             margin-top: 40px;
             padding: 20px;
             color: var(--text-muted);
             font-size: 0.9rem;
-            border-top: 1px solid var(--border-light);
         }
 
-        /* Pagination styles */
         .pagination-controls {
             display: flex;
             justify-content: center;
@@ -599,6 +773,7 @@
             border: 1px solid var(--border);
             border-radius: var(--radius);
             padding: 8px 12px;
+            font-family: inherit; /* Ensure Inter */
             font-size: 14px;
             color: var(--text-primary);
             cursor: pointer;
@@ -627,7 +802,7 @@
 <body>
 <div class="container">
     <div class="header">
-        <h1>Crisp Checker</h1>
+        <img src="/static/crisp-checker-logo.jpg" alt="Crisp Checker Logo" class="header-logo">
         <p class="subtitle">Verify if websites use Crisp Chat integration</p>
     </div>
 
@@ -652,8 +827,11 @@
         </div>
         
         <div class="button-container">
-            <button class="btn" onclick="checkUrls()" id="checkBtn">
+            <button class="btn" id="checkWebsitesBtn" onclick="checkUrlsWS()">
                 Check Websites
+            </button>
+            <button class="btn btn-danger" id="stopChecksBtn" style="display:none;"> 
+                Stop Checks
             </button>
             <button class="btn btn-clear" onclick="clearAll()">
                 Clear All
@@ -666,14 +844,62 @@
                 <span>Checking websites...</span>
             </div>
         </div>
+        <div class="progress-timer-wrapper">
+            <div id="progressContainer" style="display:none; width:100%;">
+                <label style="font-weight:500; margin-bottom:4px; display:block; text-align:left;">Progress</label>
+                <div style="background:#e2e8f0; border-radius:8px; overflow:hidden; width:100%; height:20px;">
+                    <div id="progressBar" style="background:#3b82f6; width:0%; height:100%; transition: width 0.3s;"></div>
+                </div>
+                <div id="progressText" style="margin-top:4px; color:#64748b; text-align:left;">0%</div>
+            </div>
+            <div id="timerDisplay" style="display:none; width:100%; margin-top:8px; text-align:left; color: var(--text-secondary); font-size: 0.9rem;">
+                Time Elapsed: <span id="elapsedTimeValue">00:00</span>
+            </div>
+        </div>
     </div>
+
+    <div class="card options-card" id="optionsCard">
+        <h2 id="toggleAdvancedOptionsBtn" class="collapsible-header">
+            Advanced Options & Logs <span class="toggle-icon">▶</span> </h2>
+        <div class="options-grid" id="advancedOptionsGrid" style="display:none;"> 
+            <div class="option-item">
+                <label for="concurrencyLevel" class="input-label inline">Concurrency Level:</label>
+                <input type="number" id="concurrencyLevel" value="5" min="1" max="20">
+                <small>Number of websites to check simultaneously (1-20).</small>
+            </div>
+            <div class="option-item">
+                <label for="pageLoadTimeout" class="input-label inline">Page Load Timeout (ms):</label>
+                <input type="number" id="pageLoadTimeout" value="30000" min="5000" step="1000">
+                <small>Max time to wait for a page to load.</small>
+            </div>
+            <div class="option-item">
+                <label for="jsCheckTimeout" class="input-label inline">JS Check Timeout (ms):</label>
+                <input type="number" id="jsCheckTimeout" value="10000" min="1000" step="500">
+                <small>Max time to wait for JavaScript checks (e.g., $crisp).</small>
+            </div>
+            <div class="option-item">
+                <label for="networkIdleTimeout" class="input-label inline">Network Idle Timeout (ms):</label>
+                <input type="number" id="networkIdleTimeout" value="15000" min="3000" step="1000">
+                <small>Max time to wait for network to be idle.</small>
+            </div>
+        </div>
+         <div class="log-panel-container" id="logCardContent" style="display:none; margin-top: 20px;"> <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 style="font-size: 1.2rem; font-weight: 600;">Real-time Logs</h3>
+                <div>
+                    <button id="clearLogsBtn">Clear Logs</button>
+                    <button id="copyLogsBtn" style="margin-left: 10px;">Copy Logs</button> 
+                </div>
+            </div>
+            <div id="logPanel"> <div id="logEntriesContainer"></div> </div>
+        </div>
+    </div>
+
 
     <div class="card results-card" id="resultsCard">
         <div class="results-header">
             <h2 class="results-title">Results</h2>
             <div class="stats" id="stats"></div>
         </div>
-
         <div class="controls">
             <div class="search-box">
                 <input type="text" id="searchInput" class="search-input" placeholder="Search websites...">
@@ -687,18 +913,17 @@
                 </select>
             </div>
         </div>
-
         <div class="table-container">
             <table id="resultsTable">
                 <thead>
                     <tr>
-                        <th>Website</th>
-                        <th>Status</th>
+                        <th data-sort-key="url">Website <span class="sort-icon"></span></th>
+                        <th data-sort-key="status">Status <span class="sort-icon"></span></th>
                         <th>Error Details</th>
                     </tr>
                 </thead>
                 <tbody id="resultsBody">
-                    </tbody>
+                </tbody>
             </table>
             <div id="emptyState" class="empty-state hidden">
                 <div class="empty-state-icon">🔍</div>
@@ -706,7 +931,7 @@
             </div>
         </div>
         <div id="paginationControls" class="pagination-controls">
-            </div>
+        </div>
     </div>
 </div>
 
@@ -718,23 +943,50 @@
     const urlsTextarea = document.getElementById('urls');
     const csvFileInput = document.getElementById('csvFile');
     const fileNameDisplay = document.getElementById('fileNameDisplay');
-    const checkBtn = document.getElementById('checkBtn');
-    const loading = document.getElementById('loading');
+    const checkWebsitesBtn = document.getElementById('checkWebsitesBtn'); 
+    const stopChecksBtn = document.getElementById('stopChecksBtn'); 
+    const loadingIndicator = document.getElementById('loading'); 
     const resultsCard = document.getElementById('resultsCard');
+    const resultsTable = document.getElementById('resultsTable'); // Get the table element
     const resultsBody = document.getElementById('resultsBody');
     const stats = document.getElementById('stats');
     const searchInput = document.getElementById('searchInput');
     const statusFilter = document.getElementById('statusFilter');
     const emptyState = document.getElementById('emptyState');
     const paginationControls = document.getElementById('paginationControls');
+    const progressContainer = document.getElementById('progressContainer');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    const timerDisplay = document.getElementById('timerDisplay');
+    const elapsedTimeValue = document.getElementById('elapsedTimeValue');
+    
+    const logCardContent = document.getElementById('logCardContent'); 
+    const clearLogsBtn = document.getElementById('clearLogsBtn');
+    const copyLogsBtn = document.getElementById('copyLogsBtn'); 
+    const logPanel = document.getElementById('logPanel'); 
+    const logEntriesContainer = document.getElementById('logEntriesContainer'); 
 
-    // Global variables for pagination and filtering
+    const concurrencyLevelInput = document.getElementById('concurrencyLevel');
+    const pageLoadTimeoutInput = document.getElementById('pageLoadTimeout');
+    const jsCheckTimeoutInput = document.getElementById('jsCheckTimeout');
+    const networkIdleTimeoutInput = document.getElementById('networkIdleTimeout');
+    const toggleAdvancedOptionsBtn = document.getElementById('toggleAdvancedOptionsBtn');
+    const advancedOptionsGrid = document.getElementById('advancedOptionsGrid');
+
+
+    let timerInterval = null;
+    let secondsElapsed = 0;
     let allCrispResults = [];
     let filteredCrispResults = [];
     let currentPage = 1;
-    const itemsPerPage = 20; // Limit to 20 results per page
+    const itemsPerPage = 20; 
+    let currentWebSocket = null; 
 
-    // Update file name display when a file is selected
+    // Sorting state variables
+    let currentSortKey = null;
+    let currentSortOrder = 'asc'; // 'asc' or 'desc'
+
+
     csvFileInput.addEventListener('change', () => {
         if (csvFileInput.files.length > 0) {
             fileNameDisplay.textContent = csvFileInput.files[0].name;
@@ -742,6 +994,133 @@
             fileNameDisplay.textContent = 'No file chosen';
         }
     });
+
+    function formatTime(totalSeconds) {
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+        secondsElapsed = 0;
+        elapsedTimeValue.textContent = formatTime(secondsElapsed);
+        timerDisplay.style.display = 'block'; 
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            secondsElapsed++;
+            elapsedTimeValue.textContent = formatTime(secondsElapsed);
+        }, 1000);
+    }
+
+    function stopTimer() {
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = null; 
+    }
+
+    clearLogsBtn.addEventListener('click', () => {
+        logEntriesContainer.innerHTML = '';
+    });
+
+    copyLogsBtn.addEventListener('click', () => {
+        const logsText = Array.from(logEntriesContainer.children)
+                              .map(logDiv => logDiv.textContent)
+                              .join('\n');
+        
+        if (logsText) {
+            const textarea = document.createElement('textarea');
+            textarea.value = logsText;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                const originalText = copyLogsBtn.textContent;
+                copyLogsBtn.textContent = 'Copied!';
+                copyLogsBtn.disabled = true;
+                addLogEntry("Log content copied to clipboard.", null, "SYSTEM");
+                setTimeout(() => {
+                    copyLogsBtn.textContent = originalText;
+                    copyLogsBtn.disabled = false;
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy logs using execCommand: ', err);
+                addLogEntry("Failed to copy logs. See console.", null, "ERROR");
+                alert('Failed to copy logs. Your browser might not support this feature or permission was denied.');
+            }
+            document.body.removeChild(textarea);
+        } else {
+            addLogEntry("No log content to copy.", null, "INFO");
+        }
+    });
+
+    toggleAdvancedOptionsBtn.addEventListener('click', () => {
+        const isHidden = advancedOptionsGrid.style.display === 'none';
+        advancedOptionsGrid.style.display = isHidden ? 'grid' : 'none'; 
+        logCardContent.style.display = isHidden ? 'block' : 'none'; 
+        toggleAdvancedOptionsBtn.classList.toggle('expanded', isHidden);
+    });
+
+
+    function addLogEntry(message, url = null, type = 'INFO') { 
+        const newLogDiv = document.createElement('div');
+        const displayMessage = `[${type.toUpperCase()}] ${message}`;
+        newLogDiv.textContent = displayMessage; 
+
+        if (type.toUpperCase() === "ERROR" || type.toUpperCase() === "CRITICAL") newLogDiv.classList.add('log-error');
+        else if (type.toUpperCase() === "WARNING") newLogDiv.classList.add('log-warning');
+        else if (type.toUpperCase() === "CORRECTION") newLogDiv.classList.add('log-correction');
+        else if (type.toUpperCase() === "SYSTEM") newLogDiv.classList.add('log-system'); 
+        else if (type.toUpperCase() === "INFO") newLogDiv.classList.add('log-info');
+        else if (type.toUpperCase() === "DEBUG") newLogDiv.classList.add('log-debug');
+
+        logEntriesContainer.appendChild(newLogDiv);
+        logPanel.scrollTop = logPanel.scrollHeight; 
+    }
+
+    function resetUIForNewCheck() {
+        checkWebsitesBtn.disabled = true;
+        checkWebsitesBtn.textContent = 'Checking...';
+        stopChecksBtn.style.display = 'inline-block';
+        stopChecksBtn.disabled = false;
+        stopChecksBtn.textContent = 'Stop Checks';
+        loadingIndicator.style.display = 'flex'; 
+        progressContainer.style.display = 'block'; 
+        resultsCard.style.display = 'none'; 
+        resultsBody.innerHTML = ''; 
+        allCrispResults = [];       
+        filteredCrispResults = [];
+        currentPage = 1;
+        logEntriesContainer.innerHTML = ''; 
+        
+        if (toggleAdvancedOptionsBtn.classList.contains('expanded')) {
+            logCardContent.style.display = 'block';
+        } else {
+            logCardContent.style.display = 'none'; 
+        }
+
+        updateProgress(0);          
+        startTimer();
+    }
+
+    function finalizeUICheck(wasCancelled = false) {
+        stopTimer(); 
+        loadingIndicator.style.display = 'none';
+        checkWebsitesBtn.disabled = false;
+        checkWebsitesBtn.textContent = 'Check Websites';
+        stopChecksBtn.style.display = 'none';
+        stopChecksBtn.disabled = true;
+
+        if (wasCancelled) {
+             addLogEntry("Check process was cancelled by the user.", null, "INFO");
+        }
+        
+        if (progressBar.style.width !== '100%') {
+        }
+        if (allCrispResults.length > 0) {
+            resultsCard.style.display = 'block'; 
+            resultsCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
 
     function clearAll() {
         urlsTextarea.value = '';
@@ -753,75 +1132,38 @@
         searchInput.value = '';
         statusFilter.value = 'all';
         emptyState.classList.add('hidden');
-        paginationControls.innerHTML = ''; // Clear pagination controls
-        allCrispResults = []; // Clear all results
-        filteredCrispResults = []; // Clear filtered results
-        currentPage = 1; // Reset current page
-    }
+        paginationControls.innerHTML = ''; 
+        allCrispResults = []; 
+        filteredCrispResults = []; 
+        currentPage = 1; 
 
-    async function checkUrls() {
-        let allUrls = new Set();
+        stopTimer(); 
+        timerDisplay.style.display = 'none';
+        elapsedTimeValue.textContent = '00:00';
+        secondsElapsed = 0;
 
-        // Get URLs from textarea
-        const textareaUrls = urlsTextarea.value
-            .split('\n')
-            .map(u => u.trim())
-            .filter(u => u);
-        textareaUrls.forEach(url => allUrls.add(url));
+        progressContainer.style.display = 'none';
+        updateProgress(0);
 
-        // Get URLs from CSV file if selected
-        const file = csvFileInput.files[0];
-        if (file) {
-            try {
-                const fileContent = await readFileAsync(file);
-                const csvUrls = fileContent
-                    .split(/[\n,]+/)
-                    .map(u => u.trim())
-                    .filter(u => u);
-                csvUrls.forEach(url => allUrls.add(url));
-            } catch (error) {
-                console.error('Error reading CSV file:', error);
-                showCustomAlert('Error reading CSV file. Please ensure it is a valid text file.');
-                return;
-            }
-        }
+        loadingIndicator.style.display = 'none';
+        checkWebsitesBtn.disabled = false;
+        checkWebsitesBtn.textContent = 'Check Websites'; 
+        stopChecksBtn.style.display = 'none'; 
+        stopChecksBtn.disabled = true;
 
-        const urls = Array.from(allUrls);
 
-        if (urls.length === 0) {
-            showCustomAlert("Please enter at least one URL or upload a CSV file.");
-            return;
-        }
+        logEntriesContainer.innerHTML = '';
+        logCardContent.style.display = 'none'; 
+        
+        if (advancedOptionsGrid) advancedOptionsGrid.style.display = 'none';
+        if (toggleAdvancedOptionsBtn) toggleAdvancedOptionsBtn.classList.remove('expanded');
 
-        // Show loading state
-        checkBtn.disabled = true;
-        loading.style.display = 'flex';
-        resultsCard.style.display = 'none';
 
-        try {
-            const response = await fetch('/check', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ urls })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            displayResults(data.results);
-            
-        } catch (error) {
-            console.error('Error:', error);
-            showCustomAlert(`An error occurred while checking the websites: ${error.message}. Please try again.`);
-        } finally {
-            checkBtn.disabled = false;
-            loading.style.display = 'none';
+        if(currentWebSocket && currentWebSocket.readyState === WebSocket.OPEN) {
+            currentWebSocket.close(); 
         }
     }
-
+    
     function readFileAsync(file) {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -832,65 +1174,75 @@
     }
 
     function displayResults(results) {
-        allCrispResults = results; // Store all results
-        filterTable(); // Apply filter and render first page
-        resultsCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        allCrispResults = results; 
+        // Apply current sort before filtering and rendering
+        if (currentSortKey) {
+            sortResults(currentSortKey, false); // false to not toggle order, just apply current
+        } else {
+            filterTable(); // If no sort key, just filter
+        }
     }
+    
+    function sortResults(key, toggleOrder = true) {
+        if (toggleOrder && currentSortKey === key) {
+            currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+        } else {
+            currentSortOrder = 'asc';
+        }
+        currentSortKey = key;
+
+        allCrispResults.sort((a, b) => {
+            let valA = a[key] ? a[key].toLowerCase() : '';
+            let valB = b[key] ? b[key].toLowerCase() : '';
+
+            if (valA < valB) {
+                return currentSortOrder === 'asc' ? -1 : 1;
+            }
+            if (valA > valB) {
+                return currentSortOrder === 'asc' ? 1 : -1;
+            }
+            return 0;
+        });
+        
+        // Update sort icons in headers
+        document.querySelectorAll('#resultsTable th .sort-icon').forEach(icon => icon.textContent = '');
+        const activeHeader = document.querySelector(`#resultsTable th[data-sort-key="${key}"] .sort-icon`);
+        if (activeHeader) {
+            activeHeader.textContent = currentSortOrder === 'asc' ? '▲' : '▼';
+        }
+
+        filterTable(); // Re-filter and re-render after sorting
+    }
+
 
     function renderTablePage(pageNumber) {
         currentPage = pageNumber;
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
-        const paginatedResults = filteredCrispResults.slice(startIndex, endIndex);
-
-        resultsBody.innerHTML = ''; // Clear previous results
-
-        if (paginatedResults.length === 0 && filteredCrispResults.length > 0) {
-            // If no results on current page but there are filtered results, go to last page
-            renderTablePage(Math.ceil(filteredCrispResults.length / itemsPerPage));
-            return;
-        } else if (paginatedResults.length === 0 && filteredCrispResults.length === 0) {
-            emptyState.classList.remove('hidden');
-        } else {
-            emptyState.classList.add('hidden');
-        }
+        // Use filteredCrispResults for pagination
+        const paginatedResults = filteredCrispResults.slice(startIndex, endIndex); 
+        resultsBody.innerHTML = ''; 
+        emptyState.classList.toggle('hidden', paginatedResults.length > 0 || (filteredCrispResults.length === 0 && searchInput.value === '' && statusFilter.value === 'all'));
 
         paginatedResults.forEach(result => {
             const row = document.createElement('tr');
-            
             let statusClass = '';
-            let statusText = result.status;
-            
-            if (result.status === "Uses Crisp") {
-                statusClass = "uses";
-            } else if (result.status === "Does NOT use Crisp") {
-                statusClass = "not-uses";
-            } else {
-                statusClass = "error";
-            }
-
+            if (result.status === "Uses Crisp") statusClass = "uses";
+            else if (result.status === "Does NOT use Crisp") statusClass = "not-uses";
+            else statusClass = "error";
             row.setAttribute('data-url', result.url.toLowerCase());
             row.setAttribute('data-status', statusClass);
-
             row.innerHTML = `
-                <td class="url-cell">
-                    <a href="${result.url}" target="_blank" class="url-link">${result.url}</a>
-                </td>
-                <td>
-                    <span class="badge ${statusClass}">
-                        <span class="badge-icon"></span>
-                        ${statusText}
-                    </span>
-                </td>
-                <td class="error-cell">${result.error || '-'}</td>
-            `;
-            
+                <td class="url-cell"><a href="${result.url}" target="_blank" class="url-link">${result.url}</a></td>
+                <td><span class="badge ${statusClass}"><span class="badge-icon"></span>${result.status}</span></td>
+                <td class="error-cell">${result.error || '-'}</td>`;
             resultsBody.appendChild(row);
         });
-
-        resultsCard.style.display = 'block';
-        renderPaginationControls(); // Update pagination buttons
-        updateStats(); // Update stats based on filtered results
+        if (paginatedResults.length > 0 || filteredCrispResults.length > 0) { // Show card if there are any filtered results, even if current page is empty
+            resultsCard.style.display = 'block';
+        }
+        renderPaginationControls(); 
+        updateStats(); 
     }
 
     function updateStats() {
@@ -898,67 +1250,35 @@
         const usesCrisp = filteredCrispResults.filter(r => r.status === "Uses Crisp").length;
         const doesNotUse = filteredCrispResults.filter(r => r.status === "Does NOT use Crisp").length;
         const errors = filteredCrispResults.filter(r => r.status !== "Uses Crisp" && r.status !== "Does NOT use Crisp").length;
-        
         stats.innerHTML = `
-            <div class="stat">
-                <div class="stat-dot success"></div>
-                <span>Uses Crisp: ${usesCrisp}</span>
-            </div>
-            <div class="stat">
-                <div class="stat-dot error"></div>
-                <span>No Crisp: ${doesNotUse}</span>
-            </div>
-            <div class="stat">
-                <div class="stat-dot warning"></div>
-                <span>Errors: ${errors}</span>
-            </div>
-            <div class="stat">
-                <span>Total: ${total}</span>
-            </div>
-        `;
+            <div class="stat"><div class="stat-dot success"></div><span>Uses Crisp: ${usesCrisp}</span></div>
+            <div class="stat"><div class="stat-dot error"></div><span>No Crisp: ${doesNotUse}</span></div>
+            <div class="stat"><div class="stat-dot warning"></div><span>Errors: ${errors}</span></div>
+            <div class="stat"><span>Total Filtered: ${total}</span></div>`;
     }
 
     function renderPaginationControls() {
-        paginationControls.innerHTML = ''; // Clear existing buttons
+        paginationControls.innerHTML = ''; 
         const totalPages = Math.ceil(filteredCrispResults.length / itemsPerPage);
-
-        if (totalPages <= 1) {
-            return; // No pagination needed for 1 or fewer pages
-        }
-
-        // Previous button
+        if (totalPages <= 1) return; 
         const prevButton = document.createElement('button');
-        prevButton.textContent = 'Previous';
-        prevButton.classList.add('pagination-button');
+        prevButton.textContent = 'Previous'; prevButton.classList.add('pagination-button');
         prevButton.disabled = currentPage === 1;
         prevButton.addEventListener('click', () => renderTablePage(currentPage - 1));
         paginationControls.appendChild(prevButton);
-
-        // Page number buttons
-        const maxPageButtons = 5; // Max number of page buttons to show
+        const maxPageButtons = 5; 
         let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
         let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
-
-        // Adjust startPage if we're at the end
-        if (endPage - startPage + 1 < maxPageButtons) {
-            startPage = Math.max(1, endPage - maxPageButtons + 1);
-        }
-
+        if (endPage - startPage + 1 < maxPageButtons) startPage = Math.max(1, endPage - maxPageButtons + 1);
         for (let i = startPage; i <= endPage; i++) {
             const pageButton = document.createElement('button');
-            pageButton.textContent = i;
-            pageButton.classList.add('pagination-button');
-            if (i === currentPage) {
-                pageButton.classList.add('active');
-            }
+            pageButton.textContent = i; pageButton.classList.add('pagination-button');
+            if (i === currentPage) pageButton.classList.add('active');
             pageButton.addEventListener('click', () => renderTablePage(i));
             paginationControls.appendChild(pageButton);
         }
-
-        // Next button
         const nextButton = document.createElement('button');
-        nextButton.textContent = 'Next';
-        nextButton.classList.add('pagination-button');
+        nextButton.textContent = 'Next'; nextButton.classList.add('pagination-button');
         nextButton.disabled = currentPage === totalPages;
         nextButton.addEventListener('click', () => renderTablePage(currentPage + 1));
         paginationControls.appendChild(nextButton);
@@ -968,77 +1288,215 @@
         const searchTerm = searchInput.value.toLowerCase();
         const filterValue = statusFilter.value;
         
-        filteredCrispResults = allCrispResults.filter(result => {
+        // Start with all results (or sorted results if a sort is active)
+        let tempResults = [...allCrispResults]; 
+
+        // Apply sorting if a sort key is set
+        if (currentSortKey) {
+             tempResults.sort((a, b) => {
+                let valA = a[currentSortKey] ? String(a[currentSortKey]).toLowerCase() : '';
+                let valB = b[currentSortKey] ? String(b[currentSortKey]).toLowerCase() : '';
+                if (valA < valB) return currentSortOrder === 'asc' ? -1 : 1;
+                if (valA > valB) return currentSortOrder === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+
+
+        filteredCrispResults = tempResults.filter(result => {
             const url = result.url.toLowerCase();
             let statusClass = '';
-            if (result.status === "Uses Crisp") {
-                statusClass = "uses";
-            } else if (result.status === "Does NOT use Crisp") {
-                statusClass = "not-uses";
-            } else {
-                statusClass = "error";
-            }
-
+            if (result.status === "Uses Crisp") statusClass = "uses";
+            else if (result.status === "Does NOT use Crisp") statusClass = "not-uses";
+            else statusClass = "error";
             const matchesSearch = url.includes(searchTerm);
             const matchesFilter = filterValue === 'all' || statusClass === filterValue;
-
             return matchesSearch && matchesFilter;
         });
-
-        renderTablePage(1); // Always reset to the first page when filters change
+        emptyState.classList.toggle('hidden', !(filteredCrispResults.length === 0 && (searchTerm !== '' || filterValue !== 'all')));
+        renderTablePage(1); 
     }
 
-    // Function to export results to CSV
     function exportToCsv() {
         if (filteredCrispResults.length === 0) {
-            showCustomAlert("No results to export. Please run a check first.");
-            return;
+            alert("No results to export."); return;
         }
-
         const headers = ["URL", "Status", "Error Details"];
-        // Escape double quotes and enclose fields in double quotes
-        const csvRows = [
-            headers.map(header => `"${header.replace(/"/g, '""')}"`).join(',')
-        ];
-
-        filteredCrispResults.forEach(result => {
-            const url = `"${result.url.replace(/"/g, '""')}"`;
-            const status = `"${result.status.replace(/"/g, '""')}"`;
-            const error = `"${(result.error || '-').replace(/"/g, '""')}"`;
-            csvRows.push([url, status, error].join(','));
+        const csvRows = [headers.map(h => `"${h.replace(/"/g, '""')}"`).join(',')];
+        filteredCrispResults.forEach(r => {
+            csvRows.push([`"${r.url.replace(/"/g, '""')}"`, `"${r.status.replace(/"/g, '""')}"`, `"${(r.error || '-').replace(/"/g, '""')}"`].join(','));
         });
-
-        const csvString = csvRows.join('\n');
-        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+        const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'crisp_checker_results.csv';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(link.href); // Clean up the URL object
+        link.href = URL.createObjectURL(blob); link.download = 'crisp_checker_results.csv';
+        document.body.appendChild(link); link.click(); document.body.removeChild(link);
+        URL.revokeObjectURL(link.href); 
     }
 
 
-    // Handle Ctrl+Enter in textarea
     urlsTextarea.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === 'Enter') {
-            checkUrls();
-        }
+        if (e.ctrlKey && e.key === 'Enter') checkWebsitesBtn.click();
     });
-
-    // Event listeners for search and filter
     searchInput.addEventListener('input', filterTable);
     statusFilter.addEventListener('change', filterTable);
 
-    // Initial call to update stats and pagination (in case of pre-loaded data, though not applicable here)
-    updateStats();
-    renderPaginationControls();
+    // Add event listeners to sortable table headers
+    document.querySelectorAll('#resultsTable th[data-sort-key]').forEach(header => {
+        header.addEventListener('click', () => {
+            const sortKey = header.getAttribute('data-sort-key');
+            sortResults(sortKey);
+        });
+    });
 
-    function showCustomAlert(message) {
-    alert(message);
-}
-    
+
+    stopChecksBtn.addEventListener('click', () => {
+        if (currentWebSocket && currentWebSocket.readyState === WebSocket.OPEN) {
+            addLogEntry("Stop request sent to server...", null, "INFO");
+            currentWebSocket.send(JSON.stringify({ type: "cancel_checks" }));
+            stopChecksBtn.disabled = true;
+            stopChecksBtn.textContent = 'Stopping...';
+        } else {
+            addLogEntry("No active check process to stop.", null, "WARNING");
+            finalizeUICheck(true); 
+        }
+    });
+
+
+    async function checkUrlsWS() {
+        let rawUrls = new Set(); 
+        urlsTextarea.value.split('\n').map(u => u.trim()).filter(u => u).forEach(url => rawUrls.add(url));
+        
+        const file = csvFileInput.files[0];
+        if (file) {
+            try {
+                const fileContent = await readFileAsync(file);
+                fileContent.split(/[\n,]+/).map(u => u.trim()).filter(u => u).forEach(url => rawUrls.add(url));
+            } catch (error) {
+                console.error('Error reading CSV file:', error);
+                addLogEntry(`Could not read CSV file: ${error.message}`, null, "ERROR");
+                alert('Error reading CSV file. Please ensure it is a valid text file.'); 
+                return;
+            }
+        }
+
+        const validatedUrls = [];
+        const invalidUrls = [];
+        let correctionsMade = false;
+
+        rawUrls.forEach(u => {
+            let currentUrl = u;
+            let originalUrl = u; 
+            let corrected = false;
+            if (!currentUrl.startsWith('http://') && !currentUrl.startsWith('https://')) {
+                currentUrl = 'https://' + currentUrl; 
+                corrected = true;
+                correctionsMade = true;
+            }
+            try {
+                new URL(currentUrl); 
+                validatedUrls.push(currentUrl);
+                if (corrected) {
+                    addLogEntry(`URL corrected: '${originalUrl}' -> '${currentUrl}'`, null, "CORRECTION");
+                }
+            } catch (e) {
+                invalidUrls.push(originalUrl); 
+                addLogEntry(`Invalid URL skipped: ${originalUrl} (Reason: ${e.message})`, null, "WARNING");
+            }
+        });
+
+        if (invalidUrls.length > 0) {
+            alert(`Skipped ${invalidUrls.length} invalid URL(s). See logs for details. Proceeding with ${validatedUrls.length} valid URL(s).`);
+        } else if (correctionsMade && validatedUrls.length > 0) { 
+             addLogEntry("Some URLs were automatically corrected with 'https://'. See logs.", null, "INFO");
+        }
+
+
+        if (validatedUrls.length === 0) {
+            addLogEntry("No valid URLs to process after validation.", null, "ERROR");
+            alert("No valid URLs to process. Please check your input.");
+            return;
+        }
+        
+        const options = {
+            concurrency: parseInt(concurrencyLevelInput.value) || 5,
+            pageLoadTimeout: parseInt(pageLoadTimeoutInput.value) || 30000,
+            jsCheckTimeout: parseInt(jsCheckTimeoutInput.value) || 10000,
+            networkIdleTimeout: parseInt(networkIdleTimeoutInput.value) || 15000
+        };
+
+        console.log("Frontend: Sending these validated URLs to backend:", JSON.stringify(validatedUrls));
+        console.log("Frontend: Sending these options to backend:", JSON.stringify(options));
+
+
+        resetUIForNewCheck(); 
+
+        currentWebSocket = new WebSocket(`ws://${location.host}/check_ws`);
+        
+        currentWebSocket.onopen = () => {
+            addLogEntry("WebSocket connection established. Starting checks...", null, "INFO");
+            currentWebSocket.send(JSON.stringify({ 
+                type: "url_submission", 
+                urls: validatedUrls,
+                options: options 
+            }));
+        };
+
+        currentWebSocket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+
+            if (data.type === "log_entry") {
+                addLogEntry(data.message, data.url);
+            } 
+            else if (data.type === "progress_update") { 
+                updateProgress(data.progress);
+            } else if (data.type === "completion") { 
+                addLogEntry("All checks complete. Finalizing results...", null, "INFO");
+                allCrispResults = data.results; // This is the master list
+                displayResults(allCrispResults); // This will sort then filter & render
+                updateProgress(100);
+                finalizeUICheck(false); 
+                if(currentWebSocket) currentWebSocket.close();
+            } else if (data.type === "error_message") { 
+                 addLogEntry(`Server error - ${data.error}`, null, "ERROR");
+                 finalizeUICheck(true); 
+                 if(currentWebSocket) currentWebSocket.close();
+            } else if (data.type === "cancelled") { 
+                addLogEntry("Server acknowledged cancellation. Stopping checks.", null, "INFO");
+                finalizeUICheck(true);
+                if(currentWebSocket) currentWebSocket.close();
+            }
+        };
+
+        currentWebSocket.onclose = (event) => {
+            if (progressBar.style.width !== '100%' && stopChecksBtn.textContent !== 'Stopping...') {
+                 addLogEntry(`WebSocket connection closed. Reason: ${event.reason || 'Normal closure'}`, null, "INFO");
+            }
+            finalizeUICheck(stopChecksBtn.textContent === 'Stopping...'); 
+            currentWebSocket = null; 
+        };
+
+        currentWebSocket.onerror = (error) => {
+            console.error('WebSocket Error:', error);
+            addLogEntry("WebSocket connection error. See browser console for details.", null, "ERROR");
+            finalizeUICheck(true); 
+            currentWebSocket = null; 
+            alert('WebSocket connection error. Please check the console and try again.');
+        };
+    }
+
+    function updateProgress(percent) {
+        progressBar.style.width = percent + '%';
+        progressText.innerText = percent + '%';
+    }
+
+    if(toggleAdvancedOptionsBtn && advancedOptionsGrid && logCardContent) { 
+        advancedOptionsGrid.style.display = 'none'; 
+        logCardContent.style.display = 'none'; 
+        toggleAdvancedOptionsBtn.classList.remove('expanded');
+    }
+
+
+    clearAll(); 
 </script>
 </body>
 </html>
