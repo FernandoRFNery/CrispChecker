@@ -1430,7 +1430,7 @@
 
         resetUIForNewCheck(); 
 
-        currentWebSocket = new WebSocket(`ws://${location.host}/check_ws`);
+        currentWebSocket = new WebSocket(`wss://${window.location.host}/check_ws`);
         
         currentWebSocket.onopen = () => {
             addLogEntry("WebSocket connection established. Starting checks...", null, "INFO");
